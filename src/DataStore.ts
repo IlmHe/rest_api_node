@@ -1,5 +1,5 @@
 import { Company } from './models/Company';
 
-const companies: Company[] = [];
+const companiesArr: Company[] = [];
 
-export default companies;
+export default companiesArr;

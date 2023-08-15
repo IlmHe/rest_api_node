@@ -1,11 +1,11 @@
 import * as express from 'express';
 import { createCompany, listCompanies, getCompany, deleteCompany } from '../controllers/CompanyController';
 
-const router = express.Router();
+const companyRouter = express.Router();
 
-router.post('/companies', createCompany);
-router.get('/companies', listCompanies);
-router.get('/companies/:companyId', getCompany);
-router.delete('/companies/:companyId', deleteCompany);
+companyRouter.post('/companies', createCompany);
+companyRouter.get('/companies', listCompanies);
+companyRouter.get('/companies/:companyBusinessID', getCompany);
+companyRouter.delete('/companies/:companyBusinessID', deleteCompany);
 
-export default router;
+export default companyRouter;
