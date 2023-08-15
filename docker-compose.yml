@@ -1,0 +1,14 @@
+version: '3'
+services:
+  my-postgres-container:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # Since this is a demo project, environment variables are hardcoded here for simplicity.
+      # In a real-world application, consider using environment files or other secure methods for managing secrets.
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: mydb
+    ports:
+      - "5432:5432"
