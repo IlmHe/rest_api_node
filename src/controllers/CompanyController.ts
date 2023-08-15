@@ -4,7 +4,30 @@ import {fetchCompanyDataFromExternalApi} from '../services/ExternalApiService';
 import isEmail from 'validator/lib/isEmail';
 import db from '../../db/db';
 
-
+/**
+ * @openapi
+ * /companies:
+ *   post:
+ *     summary: Create a new company
+ *     tags:
+ *       - Companies
+ *     requestBody:
+ *       description: Company data
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CompanyInput'
+ *     responses:
+ *       201:
+ *         description: Company created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Company'
+ *       400:
+ *         description: Bad request
+ */
 export const createCompany = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { name, contactEmail, companyWebsite, companyBusinessID, streetAddress, phoneNumber }: Company = req.body;
@@ -37,6 +60,23 @@ export const createCompany = async (req: Request, res: Response, next: NextFunct
     }
 };
 
+/**
+ * @openapi
+ * /companies:
+ *   get:
+ *     summary: List all companies
+ *     tags:
+ *       - Companies
+ *     responses:
+ *       200:
+ *         description: List of companies
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Company'
+ */
 export const listCompanies = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const query = 'SELECT * FROM companies';
@@ -47,6 +87,31 @@ export const listCompanies = async (req: Request, res: Response, next: NextFunct
         next(error);
     }
 };
+
+/**
+ * @openapi
+ * /companies/{companyBusinessID}:
+ *   get:
+ *     summary: Get a company by ID
+ *     tags:
+ *       - Companies
+ *     parameters:
+ *       - name: companyBusinessID
+ *         in: path
+ *         description: ID of the company to retrieve
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Company retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Company'
+ *       404:
+ *         description: Company not found
+ */
 
 export const getCompany = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -70,7 +135,29 @@ export const getCompany = async (req: Request, res: Response, next: NextFunction
     }
 };
 
-
+/**
+ * @openapi
+ * /companies/{companyBusinessID}:
+ *   delete:
+ *     summary: Delete a company by ID
+ *     tags:
+ *       - Companies
+ *     parameters:
+ *       - name: companyBusinessID
+ *         in: path
+ *         description: ID of the company to delete
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Company deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *       404:
+ *         description: Company not found
+ */
 export const deleteCompany = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const companyBusinessID: string | undefined = req.params.companyBusinessID;

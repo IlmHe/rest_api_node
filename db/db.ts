@@ -28,7 +28,7 @@ client.connect()
         return client.query(createTableQuery);
     })
     .then(() => {
-        console.log('Companies table created');
+        console.log('Companies table created (or exists already))');
     })
     .catch((error) => {
         console.error('Error connecting to the database:', error);
