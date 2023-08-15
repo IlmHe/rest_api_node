@@ -1,45 +1,55 @@
-import axios from 'axios';
+import axios, {AxiosError} from 'axios';
 
 interface CompanyApiResponse {
-    streetAddress: {
-        street: { value: string };
-        city: { value: string };
-        postalCode: { value: string };
+    streetAddress?: {
+        street?: { value: string };
+        city?: { value: string };
+        postalCode?: { value: string };
     };
-    phone: { value: string };
+    phone?: { value: string };
 }
 
+/**
+ * Fetches company data from an external API based on the companyBusinessID.
+ * @param {string} companyBusinessID - The business ID of the company.
+ * @returns {Promise<{ streetAddress?: string; phoneNumber?: string }>} A promise containing the street address and phone number of the company.
+ */
 export async function fetchCompanyDataFromExternalApi(companyBusinessID: string): Promise<{ streetAddress?: string; phoneNumber?: string }> {
     const externalApiUrl = `https://www.kauppalehti.fi/company-api/basic-info/${companyBusinessID}`;
-    console.log('Fetching data from external API:', externalApiUrl);
     const headers = {
-        'User-Agent': 'curl/7.68.0'
+        'User-Agent': 'curl/8.2.1'
     };
 
     try {
-        const response = await axios.get<CompanyApiResponse>(externalApiUrl, { headers });
+        const response = await axios.get<CompanyApiResponse>(externalApiUrl, {headers});
         const externalData = response.data;
 
-        // Type assertion for required properties
-        const street = externalData.streetAddress?.street.value;
-        const postalCode = externalData.streetAddress?.postalCode.value;
-        const city = externalData.streetAddress?.city.value;
-        const phoneNumber = externalData.phone.value;
+        const street = externalData.streetAddress?.street?.value;
+        const postalCode = externalData.streetAddress?.postalCode?.value;
+        const city = externalData.streetAddress?.city?.value;
+        let phoneNumber = externalData.phone?.value;
 
-        // Type safeguarding
         if (street && postalCode && city && phoneNumber) {
             const streetAddress = `${street}, ${postalCode}, ${city}`;
-            return { streetAddress, phoneNumber };
+            phoneNumber = '+358' + phoneNumber.slice(1);
+            return {streetAddress, phoneNumber};
         } else {
-            console.error('Error: Required properties missing in API response.');
-            return {};
+            throw new Error('Required properties missing in API response.');
         }
     } catch (error) {
-        console.error('Error fetching data from external API:', error.message);
-        if (error.response) {
-            console.error('Response data:', error.response.data);
-            console.error('Response status:', error.response.status);
+        if (axios.isAxiosError(error)) {
+            const axiosError = error as AxiosError;
+            const errorMessage = axiosError.message;
+            const responseData = axiosError.response?.data;
+            const responseStatus = axiosError.response?.status;
+            console.error('Error fetching data from external API:', errorMessage);
+            if (responseData && responseStatus) {
+                console.error('Response data:', responseData);
+                console.error('Response status:', responseStatus);
+            }
+            return Promise.reject(error);
+        } else {
+            return Promise.reject(error);
         }
-        return {};
     }
 }

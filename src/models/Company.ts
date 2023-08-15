@@ -1,5 +1,3 @@
-import { Contact } from './Contact';
-
 export interface Company {
     name: string;
     contactEmail?: string;
@@ -7,5 +5,4 @@ export interface Company {
     companyBusinessID?: string;
     streetAddress?: string;
     phoneNumber?: string;
-    contacts?: Contact[];
 }
