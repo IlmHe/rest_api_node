@@ -11,6 +11,9 @@ This is a sample Node.js Express API built using TypeScript. The API manages com
 - To run the Postgres db, go to the root directory and run:
 ``` $ docker-compose up -d ```
 
+## Issues
+- Some dependencies are missing
+
 ## OpenAPI Documentation
 
 The API is documented using OpenAPI. You can access the documentation by visiting http://localhost:3000/api-docs when the application is running. This documentation provides details about available endpoints, request/response structures, and example requests.
